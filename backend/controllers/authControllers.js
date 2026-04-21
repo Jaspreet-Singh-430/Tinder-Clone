@@ -32,7 +32,7 @@ const newUser=await User.create({
     genderPreference
 })
 const token = signToken(newUser._id);
-res.cookie("token", token, {
+res.cookie("jwt", token, {
     maxAge: 24 * 60 * 60 * 1000, // 1 day 
     httpOnly: true, // This makes the cookie inaccessible to JavaScript on the client side
     sameSite: "strict", // This helps prevent CSRF attacks
