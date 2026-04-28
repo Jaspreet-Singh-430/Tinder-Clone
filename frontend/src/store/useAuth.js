@@ -11,7 +11,7 @@ export const useAuthStore = create((set) => ({
       set({ loading: true });
       const res = await axiosInstance.post("/auth/signup", signupData);
       console.log(res.data);
-      set({ authUser: res.data.user.name });
+      set({ authUser: res.data.user });
       toast.success("User created successfully");
     } catch (err) {
       toast.error(err?.response?.data?.message || "Something went wrong");
@@ -24,7 +24,7 @@ export const useAuthStore = create((set) => ({
       set({ loading: true });
       const res = await axiosInstance.post("/auth/login", loginData);
       console.log(res.data);
-      set({ authUser: res.data.user.name });
+      set({ authUser: res.data.user });
       toast.success("Logged in successfully");
     } catch (err) {
       toast.error(err?.response?.data?.message || "Something went wrong");
@@ -49,7 +49,7 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.get("/auth/me");
       console.log(res.data);
-      set({ authUser: res.data.user.name });
+      set({ authUser: res.data.user });
     } catch (err) {
       console.log(err);
       set({ authUser: null });

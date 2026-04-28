@@ -3,7 +3,7 @@ import './App.css'
 import {Routes,Route} from "react-router-dom"
 import HomePage from "./pages/HomePage.jsx"
 import AuthPage from "./pages/AuthPage.jsx";
-import ProfilePage from "./pages/ProfilePage.jsx";
+import ProfilePage from "./pages/Profilepage.jsx";
 import ChatPage from "./pages/ChatPage.jsx";
 import {useAuthStore} from "./store/useAuth.js"
 import {Navigate} from "react-router-dom"
