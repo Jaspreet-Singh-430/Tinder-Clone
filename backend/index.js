@@ -1,7 +1,9 @@
 import express from 'express';
+import {createServer} from "http"
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import cors from 'cors'
+import { initializeSocket } from './socket/socket.js';
 import { connectDB } from './config/db.js';
 import authRoutes from './routes/auth-routes.js';
 import messagesRoutes from './routes/messages-routes.js';
@@ -9,10 +11,12 @@ import matchesRoutes from './routes/matches-routes.js';
 import usersRoutes from './routes/users-routes.js';
 dotenv.config();
 const app = express();
-app.use(express.json());
+const httpServer=createServer(app)
+initializeSocket(httpServer)
+app.use(express.json({ limit: '10mb' }));
 app.use(cookieParser());
 app.use(cors({
-    origin:"http://localhost:5173",
+    origin:process.env.CLIENT_URL,
     credentials:true
 }))
 app.use("/auth/auth",authRoutes);
@@ -20,7 +24,7 @@ app.use("/auth/messages",messagesRoutes);
 app.use("/auth/matches",matchesRoutes);
 app.use("/auth/users",usersRoutes);
 const PORT = process.env.PORT || 8001;
-app.listen(PORT, () =>{
+httpServer.listen(PORT, () =>{
    connectDB().then(() => {
        console.log(`Server is running on port ${PORT}`);
 }).catch((err) => {

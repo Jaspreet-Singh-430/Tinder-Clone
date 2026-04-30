@@ -32,7 +32,7 @@ const Header = () => {
           <div className="hidden md:flex items-center space-x-4">
             {authUser?(<div className='relative' ref={dropdownRef}>
                 <button onClick={()=>setDropdownOpen(!dropdownOpen)} className='flex items-center space-x-2 focus:outline-none'>
-                    <img src={authUser.image || '../../public/avatar.png' } alt="" 
+                    <img src={authUser.profilePicture || '../../public/avatar.png' } alt="" 
                     className='w-10 h-10 object-cover rounded-full border-2 border-white'/>
                     <span className='text-white font-medium'>{authUser.name}</span>
                 </button>

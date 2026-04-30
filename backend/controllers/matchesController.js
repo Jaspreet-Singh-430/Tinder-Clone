@@ -1,4 +1,5 @@
 import User from "../models/user.js";
+import { getConnectedUsers, getIO } from "../socket/socket.js";
 export const swipeRight = async (req, res) => {
     try {
         const { likedUserId } = req.params;
@@ -21,6 +22,24 @@ export const swipeRight = async (req, res) => {
                 await currentUser.save(),
                 await likeduser.save()]);
                 // Here you can also implement a notification system to notify both users of the match
+                const connectedUsers=getConnectedUsers()
+                const likedUserSocketId=connectedUsers.get(likedUserId)
+                if(likedUserSocketId){
+                  const io=getIO();
+                  io.to(likedUserSocketId).emit("newMatch",{
+                    id:currentUser._id,
+                    name:currentUser.name,
+                    profilePicture:currentUser.profilePicture,
+                  })
+                }
+                const currentSocketId=connectedUsers.get(currentUser._id.toString())
+                if(currentSocketId){
+                  io.to(currentSocketId).emit("newMatch",{
+                    id:likeduser._id,
+                    name:likeduser.name,
+                    profilePicture:likeduser.profilePicture,
+                  })
+                }
             }
         }
         res.status(200).json({
@@ -42,7 +61,7 @@ export const swipeLeft = async (req, res) => {
     const currentUser = await User.findById(req.user._id);
     if (!currentUser.dislikes.includes(dislikedUserId)) {
       currentUser.dislikes.push(dislikedUserId);
-      await currentUserId.save();
+      await currentUser.save();
     }
     res.status(200).json({
       success: true,
@@ -94,12 +113,12 @@ export const getUserProfiles = async (req, res) => {
         },
         {
           gender:
-            currentUser.genderPreference === "both"
-              ? { $in: ["male", "female"] }
+            currentUser.genderPreference === "Both"
+              ? { $in: ["Male", "Female"] }
               : currentUser.genderPreference,
         },
         {
-          genderPreference: { $in: [currentUser.gender, "both"] },
+          genderPreference: { $in: [currentUser.gender, "Both"] },
         },
       ],
     });

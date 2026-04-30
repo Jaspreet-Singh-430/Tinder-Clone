@@ -1,12 +1,18 @@
-import React,{useState} from 'react'
+import React,{useState,useEffect} from 'react'
 import {X,Loader,Heart,MessageCircle} from "lucide-react"
 import {Link} from "react-router-dom"
+import { useMatchStore } from '../store/useMatchStore'
 const Sidebar = () => {
     const [isOpen,setOpen]=useState(true);
-    const loading=false;
-    const matches=[{
-        id:1,name:"jack"
-    },{id:2,name:"Hagrid"}];
+    const {matches,getMyMatches,isLoadingMyMatches}=useMatchStore();
+    useEffect(()=>{
+    getMyMatches()
+    console.log(matches)
+    },[getMyMatches])
+    // const matches=[{
+    //     id:1,name:"jack"
+    // },{id:2,name:"Hagrid"}];
+
     const toggleSidebar=()=>{
         setOpen(!isOpen)
     }
@@ -25,12 +31,13 @@ const Sidebar = () => {
                 </button>
             </div>
       <div className="flex-grow overflow-y-auto p-4 z-10 relative">
-    {loading ? <LoadingState/> : matches.length == 0 ? <NoMatchesFound/>:(
+    {isLoadingMyMatches ? <LoadingState/> : matches.length==0 ?<NoMatchesFound/>
+    :(
         matches.map((match)=>(
-            <Link key={match.id} to={`/chat/${match.id}`}>
+            <Link key={match._id} to={`/chat/${match._id}`}>
                 <div className="flex items-center mb-4 cursor-pointer hover:bg-pink-50
                 p-2 rounded-lg transition-colors duration-300">
-                    <img src={match.image || "/avatar.png"} alt=""
+                    <img src={match.profilePicture || "/avatar.png"} alt=""
                     className="w-12 h-12 rounded-full object-cover mr-3 border-2
                     border-pink-300" />
                     <h3 className="font-semibold text-gray-800">{match.name}</h3>
@@ -39,7 +46,8 @@ const Sidebar = () => {
                 
             </Link>
         ))
-    )}    
+    )
+    }    
     </div>      
         </div>
     </div>

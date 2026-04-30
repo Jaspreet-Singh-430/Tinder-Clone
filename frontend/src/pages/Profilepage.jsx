@@ -9,14 +9,14 @@ const Profilepage = () => {
   const [gender,setGender]=useState(authUser.gender || "");
   const [age,setAge]=useState(authUser.age || "");
   const [genderPreference,setGenderPreference]=useState(authUser.genderPreference || []);
-  const [image,setImage]=useState(authUser.image || null);
+  const [profilePicture,setProfilePicture]=useState(authUser.profilePicture || null);
   const fileInputRef=useRef(null);
   const {loading,updateProfile}=useUserStore();
   console.log("Auth user in profile page is "+authUser);
   const handleSubmit=async(e)=>{
     e.preventDefault();
     // const profileData=new FormData();
-    updateProfile({name,bio,age,gender,genderPreference,image})
+    updateProfile({name,bio,age,gender,genderPreference,profilePicture})
     // profileData.append("name", name);
     // profileData.append("bio", bio);
     // profileData.append("gender", gender);
@@ -32,7 +32,7 @@ const Profilepage = () => {
     if(file){
       const reader=new FileReader();
       reader.onloadend=()=>{
-        setImage(reader.result);
+        setProfilePicture(reader.result);
       }
       reader.readAsDataURL(file);
     }
@@ -142,8 +142,8 @@ const Profilepage = () => {
              />
           </div>
           </div>
-          {image && (<div className='mt-4'>
-            <img src={image} alt="Profile Preview" className='h-full w-48 object-cover rounded-md'/>
+          {profilePicture && (<div className='mt-4'>
+            <img src={profilePicture} alt="Profile Preview" className='h-full w-48 object-cover rounded-md'/>
           </div>)}
 
               <button type="submit"

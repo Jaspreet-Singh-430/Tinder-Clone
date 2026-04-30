@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { axiosInstance } from "../lib/axios";
 import toast from "react-hot-toast";
+import { disconnectSocket, initializeSocket } from "../socket/socket.client";
 // import { Navigate } from "react-router-dom";
 export const useAuthStore = create((set) => ({
   authUser: null,
@@ -25,6 +26,7 @@ export const useAuthStore = create((set) => ({
       const res = await axiosInstance.post("/auth/login", loginData);
       console.log(res.data);
       set({ authUser: res.data.user });
+      initializeSocket(res.data.user._id)
       toast.success("Logged in successfully");
     } catch (err) {
       toast.error(err?.response?.data?.message || "Something went wrong");
@@ -37,6 +39,7 @@ export const useAuthStore = create((set) => ({
       await axiosInstance.post("/auth/logout");
     //   if (res.status === 200) {
     //     console.log(res.status);
+    disconnectSocket()
         set({ authUser: null });
         toast.success("Logged out successfully");
         // Navigate("/auth");
@@ -49,6 +52,7 @@ export const useAuthStore = create((set) => ({
     try {
       const res = await axiosInstance.get("/auth/me");
       console.log(res.data);
+      initializeSocket(res.data.user._id)
       set({ authUser: res.data.user });
     } catch (err) {
       console.log(err);
