@@ -12,6 +12,13 @@ export const swipeRight = async (req, res) => {
             })
         }
         if (!currentUser.likes.includes(likedUserId)) {
+             if(currentUser.dislikes.includes(likedUserId)) {
+                return res.status(200).json({
+                    success: false,
+                    message: "You have already disliked this user"
+                });
+            }
+           
             currentUser.likes.push(likedUserId);
             await currentUser.save();
             //send notification if it is a match
@@ -22,10 +29,10 @@ export const swipeRight = async (req, res) => {
                 await currentUser.save(),
                 await likeduser.save()]);
                 // Here you can also implement a notification system to notify both users of the match
+                const io=getIO();
                 const connectedUsers=getConnectedUsers()
                 const likedUserSocketId=connectedUsers.get(likedUserId)
                 if(likedUserSocketId){
-                  const io=getIO();
                   io.to(likedUserSocketId).emit("newMatch",{
                     id:currentUser._id,
                     name:currentUser.name,
@@ -42,6 +49,13 @@ export const swipeRight = async (req, res) => {
                 }
             }
         }
+        else
+           {
+                return res.status(200).json({
+                    success: false,
+                    message: "You have already liked this user"
+                });
+            }
         res.status(200).json({
             success: true,
             user: currentUser,
@@ -51,7 +65,7 @@ export const swipeRight = async (req, res) => {
     catch (error) {
         res.status(500).json({
             success: false,
-            message: "Error liking user"
+            message: error.message
         })
     }
 };
@@ -60,9 +74,22 @@ export const swipeLeft = async (req, res) => {
     const { dislikedUserId } = req.params;
     const currentUser = await User.findById(req.user._id);
     if (!currentUser.dislikes.includes(dislikedUserId)) {
+      if(currentUser.likes.includes(dislikedUserId)) {
+        return res.status(200).json({
+            success: false,
+            message: "You have already liked this user"
+        });
+      }
+      
       currentUser.dislikes.push(dislikedUserId);
       await currentUser.save();
     }
+    else {
+                return res.status(200).json({
+                    success: false,
+                    message: "You have already disliked this user"
+                });
+            }
     res.status(200).json({
       success: true,
       user: currentUser,
@@ -117,9 +144,9 @@ export const getUserProfiles = async (req, res) => {
               ? { $in: ["Male", "Female"] }
               : currentUser.genderPreference,
         },
-        {
-          genderPreference: { $in: [currentUser.gender, "Both"] },
-        },
+        // {
+        //   genderPreference: { $in: [currentUser.gender, "Both"] },
+        // },
       ],
     });
     res.status(200).json({

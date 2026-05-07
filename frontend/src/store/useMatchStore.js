@@ -16,15 +16,16 @@ getMyMatches:async()=>{
     }
     catch(err){
         set({matches:[]})
-        toast.error(error.response.data.message || "Something went wrong")
+        toast.error(err.response.data.message || "Something went wrong")
     }
     finally {
         set({isLoadingMyMatches:false})
     }
 },
 
-getUserProfiles:async()=>{
+getUserProfiles:async(a=1)=>{
     try{
+        if(a==1)
         set({isLoadingUserProfiles:true})
         const res=await axiosInstance.get("/matches/user-profiles")
         console.log(res.data.users)
@@ -41,12 +42,21 @@ getUserProfiles:async()=>{
 
 swipeRight:async(user)=>{
 try {
-await axiosInstance.post("/matches/swipe-right/"+user._id)
+const res=await axiosInstance.post("/matches/swipe-right/"+user._id)
+console.log(res.data.message)
+if(res.data.message=="You have already disliked this user"){
+    set({swipeFeedback:''})
+}
+else if(res.data.message=="You have already liked this user"){
+    set({swipeFeedback:""});
+}
+else
 set({swipeFeedback:"Liked"})
+
 }
 catch(err){
 toast.error("Failed to swipe right")
-    // set({swipeFeedback:"Failed to swipe right"})
+    set({swipeFeedback:"Failed to swipe right"})
 }
 finally{
     setTimeout(()=>set({swipeFeedback:null}),2000)
@@ -55,12 +65,21 @@ finally{
 
 swipeLeft:async(user)=>{
 try {
-await axiosInstance.post("/matches/swipe-left/"+user._id)
+const res=await axiosInstance.post("/matches/swipe-left/"+user._id)
+console.log(res.data.message)
+if(res.data.message=="You have already liked this user"){
+    set({swipeFeedback:''})
+}
+else if(res.data.message=="You have already disliked this user"){
+    set({swipeFeedback:""});
+}
+else
 set({swipeFeedback:"Passed"})
+
 }
 catch(err){
     toast.error("Failed to swipe left")
-    // set({swipeFeedback:"Failed to swipe left"})
+    set({swipeFeedback:"Failed to swipe left"})
 }
 finally{
     setTimeout(()=>set({swipeFeedback:null}),2000)

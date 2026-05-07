@@ -1,6 +1,7 @@
 import React,{useState,useEffect} from 'react'
 import {X,Loader,Heart,MessageCircle} from "lucide-react"
 import {Link} from "react-router-dom"
+import { useLayoutEffect } from 'react'
 import { useMatchStore } from '../store/useMatchStore'
 const Sidebar = () => {
     const [isOpen,setOpen]=useState(true);
@@ -13,14 +14,36 @@ const Sidebar = () => {
     //     id:1,name:"jack"
     // },{id:2,name:"Hagrid"}];
 
+    let resizeEvt;
     const toggleSidebar=()=>{
         setOpen(!isOpen)
     }
+    let scrWidth;
+    useLayoutEffect(()=>{
+       if(window.innerWidth<'768')
+       setOpen(false)
+       else
+       setOpen(true)
+    //    console.log(window.innerWidth)
+       resizeEvt = window.addEventListener('resize',()=>{
+           if(window.innerWidth<'768')
+           setOpen(false)
+           else
+           setOpen(true)
+        console.log(window.innerWidth)
+       })
+       return ()=>{
+        window.removeEventListener('resize',resizeEvt)
+       }
+    },[scrWidth]
+    )
+    //     setOpen(false);
+    
   return (
     <>
     <div className={`fixed inset-y-0 left-0 z-10 w-64 shadow-md overflow-hidden
     transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} bg-white
-    lg:translate-x-0 lg:static lg:w-1/4`}>
+      lg:static lg:w-1/4`}>
         <div className="flex flex-col h-full">
             <div className="p-4 pb-[27px] border-b border-pink-200
             flex justify-between items-center">

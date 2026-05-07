@@ -6,7 +6,7 @@ router.post("/signup", signup);
 router.post("/login", login);
 router.post("/logout", logout);
 router.get("/me", protectRoute,(req,res) => {
-    res.send({
+    res.status(200).json({
         success: true,
         user: req.user
     })
