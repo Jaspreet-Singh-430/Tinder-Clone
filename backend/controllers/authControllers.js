@@ -35,7 +35,7 @@ const token = signToken(newUser._id);
 res.cookie("jwt", token, {
     maxAge: 24 * 60 * 60 * 1000, // 1 day 
     httpOnly: true, // This makes the cookie inaccessible to JavaScript on the client side
-    sameSite: "strict", // This helps prevent CSRF attacks
+    sameSite: "lax", // This helps prevent CSRF attacks
     secure: process.env.NODE_ENV === "production", // Set to true in production for HTTPS
 
 })
@@ -49,7 +49,7 @@ catch (error) {
     console.log(error.message);
     res.status(500).json({ 
         success: false,
-        message: "Server error" });
+        message:error.message });
 }
 } 
 export const login = async(req, res) => {
