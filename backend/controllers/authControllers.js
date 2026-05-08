@@ -46,7 +46,7 @@ res.status(201).json({
 });
 }
 catch (error) {
-    console.error(error);
+    console.log(error.message);
     res.status(500).json({ 
         success: false,
         message: "Server error" });
@@ -81,7 +81,7 @@ res.status(200).json({
 })
 }
 catch (error) {
-    console.error(error);
+    console.log(message);
     res.status(500).json({ 
         success: false,
         message: error.message});
