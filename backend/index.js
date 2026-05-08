@@ -26,12 +26,7 @@ app.use("/auth/messages",messagesRoutes);
 app.use("/auth/matches",matchesRoutes);
 app.use("/auth/users",usersRoutes);
 const PORT = process.env.PORT || 8001;
-if(process.env.NODE_ENV === "production") {
-    app.use(express.static(path.join(__dirname,"/frontend/dist")))
-    app.get("*",(req,res)=>{
-        res.sendFile(path.resolve(__dirname,"frontend","dist","index.html"))
-    })
-}
+
 httpServer.listen(PORT, () =>{
    connectDB().then(() => {
        console.log(`Server is running on port ${PORT}`);
