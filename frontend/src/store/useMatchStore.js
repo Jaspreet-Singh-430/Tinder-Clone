@@ -33,7 +33,7 @@ getUserProfiles:async(a=1)=>{
     }
     catch(err){
         set({userProfiles:[]})
-        toast.error(error.response.data.message || "Something went wrong")
+        toast.error(err.response.data.message || "Something went wrong")
     }
     finally {
         set({isLoadingUserProfiles:false})
